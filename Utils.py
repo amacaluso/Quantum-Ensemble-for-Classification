@@ -246,18 +246,16 @@ def label_to_array(y):
 
 
 
-
-def evaluation_metrics(predictions, labels, save=True):
+def evaluation_metrics(predictions, X_test, y_test, save=True):
     from sklearn.metrics import brier_score_loss, accuracy_score
+    labels = label_to_array(y_test)
+
 
     predicted_class = np.round(np.asarray(predictions))
     acc = accuracy_score(np.array(predicted_class)[:, 1],
                          np.array(labels)[:, 1])
 
     columns = ['X1', 'X2', 'class0', 'class1']
-    train_data = pd.concat([pd.DataFrame(X_train), pd.DataFrame(labels)], axis=1)
-    train_data.columns = columns
-
     test_data = pd.concat([pd.DataFrame(X_test), pd.DataFrame(labels)], axis=1)
     p0 = [p[0] for p in predictions]
     p1 = [p[1] for p in predictions]
@@ -269,18 +267,18 @@ def evaluation_metrics(predictions, labels, save=True):
     test_data.columns = columns + ['p0', 'p1', 'predicted_class']
 
     if save:
-        train_data.to_csv('data/train_data.csv', index=False)
-        test_data.to_csv('results/test_data.csv', index=False)
-    brier = brier_score_loss(y, p1)
+        test_data.to_csv('output/test_data.csv', index=False)
+    brier = brier_score_loss(y_test, p1)
 
     print('Accuracy=', acc)
     print('Brier score=', brier)
+    return acc, brier
 
 
 
 
 ### Ensemble
-def ensemble_cos(X_data, Y_data, x_test, d = 2 ):
+def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     #d = 2  # number of control qubits
     n_obs = len(X_data)
 
@@ -306,7 +304,7 @@ def ensemble_cos(X_data, Y_data, x_test, d = 2 ):
 
     U1 = [0, 2]  # np.random.choice(range(4), 2, replace=False)
     U2 = [1, 3]  # np.random.choice(range(4), 2, replace=False)
-    #U3 = [0, 0]  # np.random.choice(range(4), 2, replace=False)
+    # U3 = [0, 0]  # np.random.choice(range(4), 2, replace=False)
     U4 = [2,3]  # np.random.choice(range(4), 2, replace=False)
 
     qc.barrier()
@@ -351,13 +349,13 @@ def load_data_custom(X_data=None, Y_data=None, x_test=None):
 
     # Training Set
     if X_data is None:
-        x1 = [1, 3];
+        x1 = [1, 3]
         y1 = [1, 0]
-        x2 = [-2, 2];
+        x2 = [-2, 2]
         y2 = [0, 1]
-        x3 = [3, 0];
+        x3 = [3, 0]
         y3 = [1, 0]
-        x4 = [3, 1];
+        x4 = [3, 1]
         y4 = [0, 1]
         X_data = [x1, x2, x3, x4]
         Y_data = [y1, y2, y3, y4]
@@ -376,3 +374,93 @@ def load_data_custom(X_data=None, Y_data=None, x_test=None):
     x_test = normalize_custom(x_test)
 
     return X_data, Y_data, x_test
+
+
+def training_set(X, Y, n=4):
+    ix_y1 = np.random.choice(np.where(Y == 1)[0], int(n/2), replace=False)
+    ix_y0 = np.random.choice(np.where(Y == 0)[0], int(n/2), replace=False)
+
+    X_data = np.concatenate([X[ix_y1], X[ix_y0]])
+
+    for i in range(len(X_data)):
+        X_data[i] = normalize_custom(X_data[i])
+
+    Y_vector = label_to_array(Y)
+    Y_data = np.concatenate([Y_vector[ix_y1], Y_vector[ix_y0]])
+
+    return X_data, Y_data
+
+
+def ensemble(X_data, Y_data, x_test, n_swap=1, d=4, balanced=True):
+    # d = 2  # number of control qubits
+    # n_swap=2
+
+    n_obs = len(X_data)
+    if n_obs != len(Y_data):
+        return print('Error: in the input size')
+
+    n_reg = d + 2 * n_obs + 1  # total number of registers
+
+    control = QuantumRegister(d)
+    data = QuantumRegister(n_obs, 'x')
+    labels = QuantumRegister(n_obs, 'y')
+    test = QuantumRegister(1, 'test')
+    c = ClassicalRegister(1)
+
+    qc = QuantumCircuit(control, data, labels, test, c)
+
+    for index in range(n_obs):
+        qc.initialize(X_data[index], [data[index]])
+        qc.initialize(Y_data[index], [labels[index]])
+
+    for i in range(d):
+        qc.h(control[i])
+
+    if balanced:
+        for i in range(d):
+            for j in range(n_swap):
+                U = np.random.choice(range(int(n_obs / 2)), 2, replace=False)
+                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
+                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
+
+                U = np.random.choice(range(int(n_obs / 2), n_obs), 2, replace=False)
+                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
+                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
+
+            qc.x(control[i])
+
+            for j in range(n_swap):
+                U = np.random.choice(range(int(n_obs / 2)), 2, replace=False)
+                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
+                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
+
+                U = np.random.choice(range(int(n_obs / 2), n_obs), 2, replace=False)
+                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
+                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
+
+                qc.barrier()
+    else:
+        for i in range(d):
+            for j in range(n_swap):
+                U = np.random.choice(range(n_obs), 2, replace=False)
+                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
+                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
+
+            qc.x(control[i])
+
+            for j in range(n_swap):
+                U = np.random.choice(range(n_obs), 2, replace=False)
+                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
+                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
+
+                qc.barrier()
+
+    qc.initialize(x_test, [test[0]])
+
+    # C
+    ix_cls = n_obs - 1
+    qc.h(labels[ix_cls])
+    qc.cswap(labels[ix_cls], data[ix_cls], test[0])
+    qc.h(labels[ix_cls])
+    qc.measure(labels[ix_cls], c)
+    return qc

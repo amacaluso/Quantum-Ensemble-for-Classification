@@ -22,7 +22,7 @@ print("Size Training Set: ", len(X_train))
 print("Size Test Set: ", len(X_test))
 
 accuracy = []
-n_shots = 1000
+n_shots = 100
 for i in range(10):
     #initialisation
     n = range(len(X_train))
@@ -67,14 +67,12 @@ for i in range(10):
     accuracy.append(TP / len(X_test))
 
 print('AVG Accuracy multiple cosine classifier:', np.mean(accuracy))
-print('AVG Accuracy multiple cosine classifier:', np.std(accuracy))
+print('STD Accuracy multiple cosine classifier:', np.std(accuracy))
 
 
 #
 
 accuracy = []
-n_shots = 1000
-
 
 predictions = []
 for x_test, y_ts in zip(X_test, Y_vector_test):
@@ -89,46 +87,17 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     x_test = normalize_custom(x_test)
     Y_data = np.concatenate([Y_vector_train[ix_y1], Y_vector_train[ix_y0]])
 
-    qc = ensemble_cos(X_data, Y_data, x_test)
-    r = exec_simulator(qc, n_shots=1000)
+    qc = ensemble_fixed_U(X_data, Y_data, x_test)
+    r = exec_simulator(qc, n_shots=n_shots)
 
     predictions.append(retrieve_proba(r))
     print(retrieve_proba(r), y_ts)
 
 
 
-def evaluation_metrics(predictions, y_test, save=True):
-    from sklearn.metrics import brier_score_loss, accuracy_score
-    labels = label_to_array(y_test)
-
-
-    predicted_class = np.round(np.asarray(predictions))
-    acc = accuracy_score(np.array(predicted_class)[:, 1],
-                         np.array(labels)[:, 1])
-
-    columns = ['X1', 'X2', 'class0', 'class1']
-    test_data = pd.concat([pd.DataFrame(X_test), pd.DataFrame(labels)], axis=1)
-    p0 = [p[0] for p in predictions]
-    p1 = [p[1] for p in predictions]
-
-    test_data['p0'] = p0
-    test_data['p1'] = p1
-    test_data['predicted_class'] = [pred[1] for pred in predicted_class]
-
-    test_data.columns = columns + ['p0', 'p1', 'predicted_class']
-
-    if save:
-        test_data.to_csv('output/test_data.csv', index=False)
-    brier = brier_score_loss(y_test, p1)
-
-    print('Accuracy=', acc)
-    print('Brier score=', brier)
-    return acc, brier
 
 
 
-
-
-evaluation_metrics(predictions, y_test)
+evaluation_metrics(predictions, X_test,  y_test)
 
 
