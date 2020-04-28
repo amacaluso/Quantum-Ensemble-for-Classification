@@ -146,11 +146,11 @@ def retrieve_proba(r):
         p0 = r['0'] / (r['0'] + r['1'])
         p1 = 1 - p0
     except:
-        if r.keys()[0] == '0':
-            p0 = 1;
+        if list(r.keys())[0] == '0':
+            p0 = 1
             p1 = 0
-        elif r.keys()[0] == '1':
-            p0 = 0;
+        elif list(r.keys())[0] == '1':
+            p0 = 0
             p1 = 1
     return [p0, p1]
 
@@ -394,6 +394,9 @@ def training_set(X, Y, n=4):
 def ensemble(X_data, Y_data, x_test, n_swap=1, d=4, balanced=True):
     # d = 2  # number of control qubits
     # n_swap=2
+    # n_swap = 1
+    # d = 4
+    # balanced = True
 
     n_obs = len(X_data)
     if n_obs != len(Y_data):
@@ -417,7 +420,7 @@ def ensemble(X_data, Y_data, x_test, n_swap=1, d=4, balanced=True):
         qc.h(control[i])
 
     if balanced:
-        for i in range(d):
+        for i in range(d-1):
             for j in range(n_swap):
                 U = np.random.choice(range(int(n_obs / 2)), 2, replace=False)
                 qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
@@ -439,6 +442,17 @@ def ensemble(X_data, Y_data, x_test, n_swap=1, d=4, balanced=True):
                 qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
 
                 qc.barrier()
+        U = np.random.choice(range(int(n_obs / 2)), 1, replace=False)
+        U = np.insert(U, 1, n_obs - 1)
+        qc.cswap(control[d-1], data[int(U[0])], data[int(U[1])])
+        qc.cswap(control[d-1], labels[int(U[0])], labels[int(U[1])])
+
+        qc.x(control[d-1])
+
+        U = np.random.choice(range(int(n_obs / 2), n_obs), 1, replace=False)
+        U = np.insert(U, 1, n_obs - 1)
+        qc.cswap(control[d - 1], data[int(U[0])], data[int(U[1])])
+        qc.cswap(control[d - 1], labels[int(U[0])], labels[int(U[1])])
     else:
         for i in range(d):
             for j in range(n_swap):
