@@ -56,41 +56,40 @@ def exec_simulator(qc, n_shots = 1000):
     return answer
 
 
-def cos_classifier(train, test, label_train, printing=False):
-    # x_train = train
-    # x_new = test
-    # y_train = label_train
-    c = ClassicalRegister(1)
-    x_train = QuantumRegister(1, 'x_train')
-    x_test = QuantumRegister(1, 'x_test')
-    y_train = QuantumRegister(1, 'y_train')
-    qc = QuantumCircuit(x_train, x_test, y_train, c)
-    qc.initialize(train, [x_train[0]])
-    qc.initialize(test, [x_test[0]])
-    qc.initialize(label_train, [y_train[0]])
-    qc.barrier()
-    qc.h(y_train)
-    qc.cswap(y_train, x_train, x_test)
-    qc.h(y_train)
-    qc.barrier()
-    qc.measure(y_train, c)
-    if printing:
-        print(qc)
-    return qc
 
-def plot_cls( dictionary, title = 'Test point classification' ):
-    N = len(dictionary)
+# def plot_cls( dictionary, title = 'Test point classification' ):
+#     N = len(dictionary)
+#     fig, ax = plt.subplots()
+#     ind = np.arange(N)    # the x locations for the groups
+#     width = 0.35         # the width of the bars
+#     prob_0 = [p['0']/(p['0'] + p['1']) for p in dictionary]
+#     prob_1 = [p['1']/(p['0'] + p['1']) for p in dictionary]
+#     label = [l['label'] for l in dictionary]
+#     pl1 = ax.bar(ind, prob_0, width, bottom=0)
+#     pl2 = ax.bar(ind + width, prob_1, width, bottom=0)
+#     ax.set_title( title )
+#     ax.set_xticks(ind + width / 2)
+#     ax.set_xticklabels( label )
+#     ax.legend((pl1[0], pl2[0]), ('P(y=0)', 'P(y=1)'))
+#     ax.autoscale_view()
+#     plt.show()
+
+
+def plot_cls(predictions,
+             labels = ['$C_1$', '$C_2$', '$C_3$', '$C_4$', 'AVG', '$Ensemble$'],
+             title = 'Test point classification' ):
+    N = len(predictions)
     fig, ax = plt.subplots()
     ind = np.arange(N)    # the x locations for the groups
     width = 0.35         # the width of the bars
-    prob_0 = [p['0']/(p['0'] + p['1']) for p in dictionary]
-    prob_1 = [p['1']/(p['0'] + p['1']) for p in dictionary]
-    label = [l['label'] for l in dictionary]
+    prob_0 = [p[0] for p in predictions]
+    prob_1 = [p[1] for p in predictions]
+    #label = [l['label'] for l in dictionary]
     pl1 = ax.bar(ind, prob_0, width, bottom=0)
     pl2 = ax.bar(ind + width, prob_1, width, bottom=0)
     ax.set_title( title )
     ax.set_xticks(ind + width / 2)
-    ax.set_xticklabels( label )
+    ax.set_xticklabels( labels )
     ax.legend((pl1[0], pl2[0]), ('P(y=0)', 'P(y=1)'))
     ax.autoscale_view()
     plt.show()
@@ -277,75 +276,8 @@ def evaluation_metrics(predictions, X_test, y_test, save=True):
 
 
 
-### Ensemble
-def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
-    #d = 2  # number of control qubits
-    n_obs = len(X_data)
-
-    if n_obs != len(Y_data):
-        return print('Error: in the input size')
-
-    n_reg = d + 2 * n_obs + 1  # total number of registers
-
-    control = QuantumRegister(d)
-    data = QuantumRegister(n_obs, 'x')
-    labels = QuantumRegister(n_obs, 'y')
-    test = QuantumRegister(1, 'test')
-    c = ClassicalRegister(1)
-
-    qc = QuantumCircuit(control, data, labels, test, c)
-
-    for index in range(n_obs):
-        qc.initialize(X_data[index], [data[index]])
-        qc.initialize(Y_data[index], [labels[index]])
-
-    for i in range(d):
-        qc.h(control[i])
-
-    U1 = [0, 2]  # np.random.choice(range(4), 2, replace=False)
-    U2 = [1, 3]  # np.random.choice(range(4), 2, replace=False)
-    # U3 = [0, 0]  # np.random.choice(range(4), 2, replace=False)
-    U4 = [2,3]  # np.random.choice(range(4), 2, replace=False)
-
-    qc.barrier()
-
-    # U1
-    qc.cswap(control[0], data[int(U1[0])], data[int(U1[1])])
-    qc.cswap(control[0], labels[int(U1[0])], labels[int(U1[1])])
-
-    qc.x(control[0])
-
-    # U2
-    qc.cswap(control[0], data[int(U2[0])], data[int(U2[1])])
-    qc.cswap(control[0], labels[int(U2[0])], labels[int(U2[1])])
-
-    qc.barrier()
-
-    # U3
-    # qc.cswap(control[1], data[int(U3[0])], data[int(U3[1])])
-    # qc.cswap(control[1], labels[int(U3[0])], labels[int(U3[1])])
-
-    qc.x(control[1])
-
-    # U4
-    qc.cswap(control[1], data[int(U4[0])], data[int(U4[1])])
-    qc.cswap(control[1], labels[int(U4[0])], labels[int(U4[1])])
-
-    qc.barrier()
-    qc.initialize(x_test, [test[0]])
-
-    # C
-    ix_cls = 3
-    qc.h(labels[ix_cls])
-    qc.cswap(labels[ix_cls], data[ix_cls], test[0])
-    qc.h(labels[ix_cls])
-    qc.measure(labels[ix_cls], c)
-    return qc
-
 
 def load_data_custom(X_data=None, Y_data=None, x_test=None):
-    y_class0 = [1, 0]
-    y_class1 = [0, 1]
 
     # Training Set
     if X_data is None:
@@ -365,10 +297,10 @@ def load_data_custom(X_data=None, Y_data=None, x_test=None):
 
     print(X_data)
 
-    V = np.array([x1, x3, x2, x4, x_test])
-    origin = [0], [0]  # origin point
-    plt.quiver(*origin, V[:, 0], V[:, 1], color=['tan', 'tan', 'g', 'g', 'red'], scale=10)
-    plt.show()
+    # V = np.array([x1, x3, x2, x4, x_test])
+    # origin = [0], [0]  # origin point
+    # plt.quiver(*origin, V[:, 0], V[:, 1], color=['tan', 'tan', 'g', 'g', 'red'], scale=10)
+    # plt.show()
 
     X_data = [normalize_custom(x) for x in X_data]
     x_test = normalize_custom(x_test)
@@ -390,83 +322,3 @@ def training_set(X, Y, n=4):
 
     return X_data, Y_data
 
-
-def ensemble(X_data, Y_data, x_test, n_swap=1, d=2, balanced=True):
-    # d = 2  # number of control qubits
-    # n_swap = 1
-    # balanced = True
-
-    n_obs = len(X_data)
-    if n_obs != len(Y_data):
-        return print('Error: in the input size')
-
-    n_reg = d + 2 * n_obs + 1  # total number of registers
-
-    control = QuantumRegister(d)
-    data = QuantumRegister(n_obs, 'x')
-    labels = QuantumRegister(n_obs, 'y')
-    test = QuantumRegister(1, 'test')
-    c = ClassicalRegister(1)
-
-    qc = QuantumCircuit(control, data, labels, test, c)
-
-    for index in range(n_obs):
-        qc.initialize(X_data[index], [data[index]])
-        qc.initialize(Y_data[index], [labels[index]])
-
-    for i in range(d):
-        qc.h(control[i])
-
-    if balanced:
-        for i in range(d-1):
-            for j in range(n_swap):
-                U = np.random.choice(range(int(n_obs / 2)), 2, replace=False)
-                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
-                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
-
-                U = np.random.choice(range(int(n_obs / 2), n_obs), 2, replace=False)
-                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
-                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
-
-            qc.x(control[i])
-
-            for j in range(n_swap):
-                U = np.random.choice(range(int(n_obs / 2)), 2, replace=False)
-                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
-                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
-
-                U = np.random.choice(range(int(n_obs / 2), n_obs), 2, replace=False)
-                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
-                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
-
-                qc.barrier()
-        U = np.random.choice(range(int(n_obs / 2)), 1, replace=False)
-        U = np.insert(U, 1, n_obs - 1)
-        qc.cswap(control[d-1], data[int(U[0])], data[int(U[1])])
-        qc.cswap(control[d-1], labels[int(U[0])], labels[int(U[1])])
-
-        qc.x(control[d-1])
-    else:
-        for i in range(d):
-            for j in range(n_swap):
-                U = np.random.choice(range(n_obs), 2, replace=False)
-                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
-                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
-
-            qc.x(control[i])
-
-            for j in range(n_swap):
-                U = np.random.choice(range(n_obs), 2, replace=False)
-                qc.cswap(control[i], data[int(U[0])], data[int(U[1])])
-                qc.cswap(control[i], labels[int(U[0])], labels[int(U[1])])
-
-    qc.barrier()
-    qc.initialize(x_test, [test[0]])
-    qc.barrier()
-    # C
-    ix_cls = n_obs - 1
-    qc.h(labels[ix_cls])
-    qc.cswap(labels[ix_cls], data[ix_cls], test[0])
-    qc.h(labels[ix_cls])
-    qc.measure(labels[ix_cls], c)
-    return qc

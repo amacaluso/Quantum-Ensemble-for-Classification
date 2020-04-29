@@ -22,7 +22,7 @@ print("Size Training Set: ", len(X_train))
 print("Size Test Set: ", len(X_test))
 
 accuracy = []
-n_shots = 100
+n_shots = 1000
 for i in range(10):
     #initialisation
     n = range(len(X_train))
@@ -69,12 +69,12 @@ for i in range(10):
 print('AVG Accuracy multiple cosine classifier:', np.mean(accuracy))
 print('STD Accuracy multiple cosine classifier:', np.std(accuracy))
 
-
+print(qc)
 #
 
 accuracy = []
-
 predictions = []
+
 for x_test, y_ts in zip(X_test, Y_vector_test):
     ix_y1 = np.random.choice(np.where(y_train == 1)[0], 2, replace=False)
     ix_y0 = np.random.choice(np.where(y_train == 0)[0], 2, replace=False)
