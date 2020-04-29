@@ -1,4 +1,6 @@
-from Utils import *
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
+from qiskit import BasicAer, execute, IBMQ
+import numpy as np
 
 def cos_classifier(train, test, label_train, printing=False):
     # x_train = train
@@ -183,3 +185,13 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     qc.cx(labels[ix_cls], label_test[0])
     qc.measure(label_test[0], c)
     return qc
+
+
+
+def exec_simulator(qc, n_shots = 1000):
+    # QASM simulation
+    backend = BasicAer.get_backend('qasm_simulator')
+    job = execute(qc, backend, shots = n_shots)
+    results = job.result()
+    answer = results.get_counts(qc)
+    return answer

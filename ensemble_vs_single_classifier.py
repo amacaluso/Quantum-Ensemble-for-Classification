@@ -1,6 +1,8 @@
-from Utils import *
 import sys
 sys.path.insert(1, '../')
+
+from Utils import *
+from modeling import *
 
 create_dir('data')
 create_dir('output')
@@ -92,9 +94,6 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
 
     predictions.append(retrieve_proba(r))
     print(retrieve_proba(r), y_ts)
-
-
-
 
 
 
