@@ -115,7 +115,6 @@ def ensemble(X_data, Y_data, x_test, n_swap=1, d=2, balanced=True):
 
 
 
-
 def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     #d = 2  # number of control qubits
     n_obs = len(X_data)
@@ -125,11 +124,11 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
 
     n_reg = d + 2 * n_obs + 1  # total number of registers
 
-    control = QuantumRegister(d)
+    control = QuantumRegister(d, 'control')
     data = QuantumRegister(n_obs, 'x')
     labels = QuantumRegister(n_obs, 'y')
-    data_test = QuantumRegister(1, 'test_data')
-    label_test = QuantumRegister(1, 'test_label')
+    data_test = QuantumRegister(1, 'x test')
+    label_test = QuantumRegister(1, 'y test')
     c = ClassicalRegister(1)
 
     qc = QuantumCircuit(control, data, labels, data_test, label_test, c)
@@ -137,6 +136,9 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     for index in range(n_obs):
         qc.initialize(X_data[index], [data[index]])
         qc.initialize(Y_data[index], [labels[index]])
+
+    qc.initialize(x_test, [data_test[0]])
+
 
     for i in range(d):
         qc.h(control[i])
@@ -171,7 +173,6 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     qc.cswap(control[1], labels[int(U4[0])], labels[int(U4[1])])
 
     qc.barrier()
-    qc.initialize(x_test, [data_test[0]])
 
     # C
     ix_cls = 3
@@ -185,6 +186,8 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     qc.cx(labels[ix_cls], label_test[0])
     qc.measure(label_test[0], c)
     return qc
+
+
 
 
 

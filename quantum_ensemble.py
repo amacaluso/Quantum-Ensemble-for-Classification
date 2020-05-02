@@ -10,19 +10,19 @@ provider = IBMQ.get_provider(hub='ibm-q')
 provider.backends()
 backend = provider.get_backend('ibmq_qasm_simulator')
 
-create_dir('data')
-create_dir('output')
-create_dir('IMG')
+# create_dir('data')
+# create_dir('output')
+# create_dir('IMG')
 
-seed = 4552
+seed = 565
 np.random.seed(seed)
 
-n_train = 2
-d = 1
-std = .25
+n_train = 8
+d = 5
+std = .1
 balanced = True
 
-n = 100
+n = 200
 n_shots = 1000
 n_swap = 1
 test_size = .2
@@ -34,8 +34,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed, tes
 Y_vector_train = label_to_array(y_train)
 Y_vector_test = label_to_array(y_test)
 
-print("Size Training Set: ", len(X_train))
-print("Size Test Set: ", len(X_test))
+# print("Size Training Set: ", len(X_train))
+# print("Size Test Set: ", len(X_test))
 
 accuracy = []
 predictions = []
@@ -53,7 +53,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     r = results.get_counts(qc)
 
     predictions.append(retrieve_proba(r))
-    print(retrieve_proba(r), y_ts)
+    # print(retrieve_proba(r), y_ts)
 
 a, b = evaluation_metrics(predictions, X_test, y_test)
 

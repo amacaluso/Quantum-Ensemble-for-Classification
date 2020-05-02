@@ -60,6 +60,8 @@ def plot_cls(predictions,
     ax.set_xticklabels(labels)
     ax.legend((pl1[0], pl2[0]), ('P(y=0)', 'P(y=1)'))
     ax.autoscale_view()
+    plt.ylim(0,1)
+    plt.grid(alpha=.2)
     plt.savefig('output/'+file+'.png', dpi=300)
     plt.show()
 
