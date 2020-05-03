@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from IPython.core.display import HTML
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+import random
+
 
 def create_dir(path):
     if not os.path.exists(path):
@@ -174,7 +175,6 @@ def multivariateGrid(col_x, col_y, col_k, df, k_is_color=False, scatter_alpha=.5
     plt.savefig('data/data.png', dpi=300, bbox_inches="tight")
     plt.show()
     plt.close()
-
 
 def load_data(n=100, centers=[[0.5, .1], [.1, 0.5]],
               std=.20, seed=4552, plot=True, save=True):
