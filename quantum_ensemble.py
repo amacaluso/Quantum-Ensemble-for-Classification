@@ -34,12 +34,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed, tes
 Y_vector_train = label_to_array(y_train)
 Y_vector_test = label_to_array(y_test)
 
-# print("Size Training Set: ", len(X_train))
-# print("Size Test Set: ", len(X_test))
+print("Size Training Set: ", len(X_train))
+print("Size Test Set: ", len(X_test))
 
 accuracy = []
 predictions = []
-
 
 for x_test, y_ts in zip(X_test, Y_vector_test):
     X_data, Y_data = training_set(X_train, y_train, n=n_train)
@@ -48,7 +47,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     qc = ensemble(X_data, Y_data, x_test, n_swap=n_swap, d=d, balanced=balanced)
     # r = exec_simulator(qc, n_shots=n_shots)
 
-    job = execute(qc, backend, shots=n_shots, optimization_level=3)
+    job = execute(qc, backend, shots=n_shots)
     results = job.result()
     r = results.get_counts(qc)
 
