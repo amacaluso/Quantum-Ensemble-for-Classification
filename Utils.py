@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from IPython.core.display import HTML
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+import random
+
 
 def create_dir(path):
     if not os.path.exists(path):
