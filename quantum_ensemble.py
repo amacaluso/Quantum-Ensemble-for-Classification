@@ -19,7 +19,7 @@ np.random.seed(seed)
 
 n_train = 8
 d = 5
-std = .1
+std = .15
 balanced = True
 
 n = 200
@@ -48,7 +48,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     qc = ensemble(X_data, Y_data, x_test, n_swap=n_swap, d=d, balanced=balanced)
     # r = exec_simulator(qc, n_shots=n_shots)
 
-    job = execute(qc, backend, shots=n_shots)
+    job = execute(qc, backend, shots=n_shots, optimization_level=3)
     results = job.result()
     r = results.get_counts(qc)
 

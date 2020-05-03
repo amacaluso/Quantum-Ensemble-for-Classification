@@ -175,7 +175,6 @@ def multivariateGrid(col_x, col_y, col_k, df, k_is_color=False, scatter_alpha=.5
     plt.show()
     plt.close()
 
-
 def load_data(n=100, centers=[[0.5, .1], [.1, 0.5]],
               std=.20, seed=4552, plot=True, save=True):
     X, y = datasets.make_blobs(n_samples=n, centers=centers,
