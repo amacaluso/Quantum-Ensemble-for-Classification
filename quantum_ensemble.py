@@ -14,21 +14,24 @@ backend = provider.get_backend('ibmq_qasm_simulator')
 # create_dir('output')
 # create_dir('IMG')
 
-seed = 565
-np.random.seed(seed)
-
-n_train = 8
-d = 5
-std = .15
-balanced = True
-
-n = 200
 n_shots = 1000
 n_swap = 1
-test_size = .2
 
+# n_train = 2
+# d = 1
+# std = .3
 
-X, y = load_data(n=n, std=std)
+balanced = True
+
+# seed = 565
+np.random.seed(seed)
+
+centers = [[.0, .9], [.6, .7]]
+
+n = 200
+test_size = .1
+
+X, y = load_data(n=n, centers=centers, std=std, save=False)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed, test_size=test_size)
 
 Y_vector_train = label_to_array(y_train)

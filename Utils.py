@@ -8,6 +8,8 @@ import seaborn as sns
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 import random
+from scipy.stats import ttest_ind
+
 
 
 def create_dir(path):
@@ -67,29 +69,36 @@ def plot_cls(predictions,
     plt.show()
 
 
-def load_data_custom(X_data=None, Y_data=None, x_test=None):
+def load_data_custom(X_data=None, Y_data=None, x_test=None, normalize=True):
     # Training Set
     if X_data is None:
         x1 = [1, 3]
-        y1 = [1, 0]
         x2 = [-2, 2]
-        y2 = [0, 1]
         x3 = [3, 0]
-        y3 = [1, 0]
         x4 = [3, 1]
-        y4 = [0, 1]
         X_data = [x1, x2, x3, x4]
+        
+    if Y_data is None:
+        y1 = [1, 0]
+        y2 = [0, 1]
+        y3 = [1, 0]
+        y4 = [0, 1]
         Y_data = [y1, y2, y3, y4]
 
     if x_test is None:
         x_test = [2, 2]
 
+    # print(X_data)
+
     # V = np.array([x1, x3, x2, x4, x_test])
     # origin = [0], [0]  # origin point
     # plt.quiver(*origin, V[:, 0], V[:, 1], color=['tan', 'tan', 'g', 'g', 'red'], scale=10)
     # plt.show()
-    X_data = [normalize_custom(x) for x in X_data]
-    x_test = normalize_custom(x_test)
+    
+    if normalize:
+        X_data = [normalize_custom(x) for x in X_data]
+        x_test = normalize_custom(x_test)
+
     return X_data, Y_data, x_test
 
 
@@ -231,34 +240,6 @@ def evaluation_metrics(predictions, X_test, y_test, save=True):
     return acc, brier
 
 
-def load_data_custom(X_data=None, Y_data=None, x_test=None):
-    # Training Set
-    if X_data is None:
-        x1 = [1, 3]
-        y1 = [1, 0]
-        x2 = [-2, 2]
-        y2 = [0, 1]
-        x3 = [3, 0]
-        y3 = [1, 0]
-        x4 = [3, 1]
-        y4 = [0, 1]
-        X_data = [x1, x2, x3, x4]
-        Y_data = [y1, y2, y3, y4]
-
-    if x_test is None:
-        x_test = [2, 2]
-
-    print(X_data)
-
-    # V = np.array([x1, x3, x2, x4, x_test])
-    # origin = [0], [0]  # origin point
-    # plt.quiver(*origin, V[:, 0], V[:, 1], color=['tan', 'tan', 'g', 'g', 'red'], scale=10)
-    # plt.show()
-
-    X_data = [normalize_custom(x) for x in X_data]
-    x_test = normalize_custom(x_test)
-
-    return X_data, Y_data, x_test
 
 
 def training_set(X, Y, n=4):
