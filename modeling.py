@@ -124,10 +124,10 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     n_reg = d + 2 * n_obs + 1  # total number of registers
 
     control = QuantumRegister(d)
-    data = QuantumRegister(n_obs, 'x')
-    labels = QuantumRegister(n_obs, 'y')
-    data_test = QuantumRegister(1, 'test_data')
-    label_test = QuantumRegister(1, 'test_label')
+    data = QuantumRegister(n_obs, 'data_x')
+    labels = QuantumRegister(n_obs, 'data_y')
+    data_test = QuantumRegister(1, 'x_{test}')
+    label_test = QuantumRegister(1, 'test_y')
     c = ClassicalRegister(1)
 
     qc = QuantumCircuit(control, data, labels, data_test, label_test, c)

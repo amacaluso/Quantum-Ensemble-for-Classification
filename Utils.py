@@ -6,11 +6,13 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import datasets
-from sklearn.model_selection import train_test_split
+from sklearn.metrics.pairwise import cosine_similarity
 import random
+
 from scipy.stats import ttest_ind
 
-
+import warnings
+warnings.filterwarnings('ignore')
 
 def create_dir(path):
     if not os.path.exists(path):
@@ -45,12 +47,37 @@ def add_label(d, label='0'):
     return d
 
 
+# def plot_cls(predictions,
+#              labels=['$f_1$', '$f_2$', '$f_3$', '$f_4$', 'AVG', '$Ensemble$'],
+#              title='Test point classification',
+#              file='ens_vs_single.png'):
+#     N = len(predictions)
+#     fig, ax = plt.subplots()
+#     ind = np.arange(N)  # the x locations for the groups
+#     width = 0.35  # the width of the bars
+#     prob_0 = [p[0] for p in predictions]
+#     prob_1 = [p[1] for p in predictions]
+#     # label = [l['label'] for l in dictionary]
+#     pl1 = ax.bar(ind, prob_0, width, bottom=0)
+#     pl2 = ax.bar(ind + width, prob_1, width, bottom=0)
+#     ax.set_title(title)
+#     ax.set_xticks(ind + width / 2)
+#     ax.set_xticklabels(labels, size=10)
+#     ax.legend((pl1[0], pl2[0]), ('P(y=0)', 'P(y=1)'))
+#     ax.autoscale_view()
+#     plt.ylim(0, 1)
+#     plt.grid(alpha=.2)
+#     plt.savefig('output/' + file + '.png', dpi=200)
+#     plt.show()
+
 def plot_cls(predictions,
-             labels=['$C_1$', '$C_2$', '$C_3$', '$C_4$', 'AVG', '$Ensemble$'],
+             #labels=['$f_1$', '$f_2$', '$f_3$', '$f_4$', 'AVG', '$Ensemble$'],
              title='Test point classification',
              file='ens_vs_single.png'):
     N = len(predictions)
     fig, ax = plt.subplots()
+    plt.rc('text', usetex=True)
+    #plt.rc('font', family='serif')
     ind = np.arange(N)  # the x locations for the groups
     width = 0.35  # the width of the bars
     prob_0 = [p[0] for p in predictions]
@@ -60,13 +87,17 @@ def plot_cls(predictions,
     pl2 = ax.bar(ind + width, prob_1, width, bottom=0)
     ax.set_title(title)
     ax.set_xticks(ind + width / 2)
-    ax.set_xticklabels(labels)
-    ax.legend((pl1[0], pl2[0]), ('P(y=0)', 'P(y=1)'))
+    ax.set_xticklabels([r'$f_1$', r'$f_2$', r'$f_3$', r'$f_4$', 'AVG', 'Ensemble'], size=15)
+    ax.set_yticklabels([0.0, 0.2, 0.4, 0.6, 0.8, 1.0],size=15)
+    ax.legend((pl1[0], pl2[0]), (r'$P(\tilde{y}=0)$', r'$P(\tilde{y}=1)$'), prop=dict(size=14))
     ax.autoscale_view()
-    plt.ylim(0,1)
+    plt.ylim(0, 1)
     plt.grid(alpha=.2)
-    plt.savefig('output/'+file+'.png', dpi=300)
+    ax.tick_params(pad=5)
+    if file is not None:
+        plt.savefig('output/' + file + '.png', dpi=300)
     plt.show()
+
 
 
 def load_data_custom(X_data=None, Y_data=None, x_test=None, normalize=True):
@@ -77,7 +108,7 @@ def load_data_custom(X_data=None, Y_data=None, x_test=None, normalize=True):
         x3 = [3, 0]
         x4 = [3, 1]
         X_data = [x1, x2, x3, x4]
-        
+
     if Y_data is None:
         y1 = [1, 0]
         y2 = [0, 1]
@@ -94,7 +125,7 @@ def load_data_custom(X_data=None, Y_data=None, x_test=None, normalize=True):
     # origin = [0], [0]  # origin point
     # plt.quiver(*origin, V[:, 0], V[:, 1], color=['tan', 'tan', 'g', 'g', 'red'], scale=10)
     # plt.show()
-    
+
     if normalize:
         X_data = [normalize_custom(x) for x in X_data]
         x_test = normalize_custom(x_test)
@@ -185,6 +216,7 @@ def multivariateGrid(col_x, col_y, col_k, df, k_is_color=False, scatter_alpha=.5
     plt.show()
     plt.close()
 
+
 def load_data(n=100, centers=[[0.5, .1], [.1, 0.5]],
               std=.20, seed=4552, plot=True, save=True):
     X, y = datasets.make_blobs(n_samples=n, centers=centers,
@@ -240,6 +272,19 @@ def evaluation_metrics(predictions, X_test, y_test, save=True):
     return acc, brier
 
 
+# def training_set(X, Y, n=4):
+#     ix_y1 = np.random.choice(np.where(Y == 1)[0], int(n / 2), replace=False)
+#     ix_y0 = np.random.choice(np.where(Y == 0)[0], int(n / 2), replace=False)
+
+#     X_data = np.concatenate([X[ix_y1], X[ix_y0]])
+
+#     for i in range(len(X_data)):
+#         X_data[i] = normalize_custom(X_data[i])
+
+#     Y_vector = label_to_array(Y)
+#     Y_data = np.concatenate([Y_vector[ix_y1], Y_vector[ix_y0]])
+
+#     return X_data, Y_data
 
 
 def training_set(X, Y, n=4):
@@ -247,11 +292,14 @@ def training_set(X, Y, n=4):
     ix_y0 = np.random.choice(np.where(Y == 0)[0], int(n / 2), replace=False)
 
     X_data = np.concatenate([X[ix_y1], X[ix_y0]])
+    X_data_new = []
 
     for i in range(len(X_data)):
-        X_data[i] = normalize_custom(X_data[i])
+        X_data_new.append(normalize_custom(X_data[i]))
+
+    X_data_new = np.array(X_data_new)
 
     Y_vector = label_to_array(Y)
     Y_data = np.concatenate([Y_vector[ix_y1], Y_vector[ix_y0]])
 
-    return X_data, Y_data
+    return X_data_new, Y_data

@@ -1,10 +1,13 @@
 from past.builtins import execfile
 
-# 565: std = .25, .30 and all d=1
-# 36: solo d=2 std .1
+# import random
+# seeds = random.sample(range(1, 10**3), 5)
+# print(seeds)
 
-seeds = [565, 36, 1252, 7]
-d_vector = [2, 3, 4, 1]
+#fino a 238 3 8 0.2
+
+seeds = [ 296, 77, 810, 253]
+d_vector = [1, 2, 3, 4]
 stds = [.1, .15, .20, .25, .30]
 
 
