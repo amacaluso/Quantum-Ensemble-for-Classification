@@ -10,10 +10,6 @@ provider = IBMQ.get_provider(hub='ibm-q')
 provider.backends()
 backend = provider.get_backend('ibmq_qasm_simulator')
 
-from qiskit.compiler import transpile
-import warnings
-warnings.filterwarnings("ignore")
-
 # create_dir('data')
 # create_dir('output')
 # create_dir('IMG')
@@ -25,17 +21,15 @@ n_swap = 1
 # d = 1
 # std = .3
 
-balanced = False
+balanced = True
 
 # seed = 565
 np.random.seed(seed)
 
-centers = [[.0, .9], [.6, .7]]
-
-n = 200
+n = 150
 test_size = .1
 
-X, y = load_data(n=n, centers=centers, std=std, save=False)
+X, y = load_data(n=n, std=std, save=False)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed, test_size=test_size)
 
 Y_vector_train = label_to_array(y_train)

@@ -1,16 +1,18 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 from qiskit import BasicAer, execute, IBMQ
+from qiskit.compiler import transpile
+
 import numpy as np
 
 def cos_classifier(train, test, label_train, printing=False):
     # x_train = train
     # x_new = test
     # y_train = label_train
-    c = ClassicalRegister(1)
-    x_train = QuantumRegister(1, 'x_train')
+    c = ClassicalRegister(1, 'c')
+    x_train = QuantumRegister(1, 'x_b')
     x_test = QuantumRegister(1, 'x_test')
     y_train = QuantumRegister(1, 'y_train')
-    y_test = QuantumRegister(1, 'y_test')
+    y_test = QuantumRegister(1, 'ancilla')
     qc = QuantumCircuit(x_train, x_test, y_train, y_test, c)
     qc.initialize(train, [x_train[0]])
     qc.initialize(test, [x_test[0]])

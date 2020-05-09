@@ -7,6 +7,7 @@ import pandas as pd
 import seaborn as sns
 from sklearn import datasets
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.model_selection import train_test_split
 import random
 
 from scipy.stats import ttest_ind
@@ -217,7 +218,7 @@ def multivariateGrid(col_x, col_y, col_k, df, k_is_color=False, scatter_alpha=.5
     plt.close()
 
 
-def load_data(n=100, centers=[[0.5, .1], [.1, 0.5]],
+def load_data(n=100, centers=[[-.4, .6], [.6, .1]],
               std=.20, seed=4552, plot=True, save=True):
     X, y = datasets.make_blobs(n_samples=n, centers=centers,
                                n_features=2, center_box=(0, 1),
