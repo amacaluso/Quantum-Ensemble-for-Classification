@@ -14,7 +14,7 @@ backend = provider.get_backend('ibmq_qasm_simulator')
 # create_dir('output')
 # create_dir('IMG')
 
-n_shots = 1000
+n_shots = 500
 n_swap = 1
 
 # n_train = 2
@@ -26,7 +26,7 @@ balanced = True
 # seed = 565
 np.random.seed(seed)
 
-n = 150
+n = 200
 test_size = .1
 
 X, y = load_data(n=n, std=std, save=False)
