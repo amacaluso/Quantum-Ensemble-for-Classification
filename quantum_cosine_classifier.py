@@ -1,9 +1,10 @@
 import sys
 
+sys.path.insert(1, '../')
+
 from Utils import *
 from modeling import *
 
-sys.path.insert(1, '../')
 
 n_shots = 500
 n_swap = 1
@@ -29,16 +30,10 @@ Y_vector_test = label_to_array(y_test)
 print("Size Training Set: ", len(X_train))
 print("Size Test Set: ", len(X_test))
 
-accuracy = []
-
-# for i in range(100):
-#     n = range(len(X_train))
-#     TP = 0
 predictions = []
-probabilities = []
 
 for x_test, y_ts in zip(X_test, Y_vector_test):
-    ix = np.random.choice(n, 1)[0]
+    ix = np.random.choice(int(n*(1-test_size)), 1)[0]
     x_train = X_train[ix]
     x_tr = normalize_custom(x_train)
     y_tr = Y_vector_train[ix]

@@ -268,8 +268,6 @@ def evaluation_metrics(predictions, X_test, y_test, save=True):
         test_data.to_csv('output/test_data.csv', index=False)
     brier = brier_score_loss(y_test, p1)
 
-    print('Accuracy=', acc)
-    print('Brier score=', brier)
     return acc, brier
 
 

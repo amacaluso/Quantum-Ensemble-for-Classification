@@ -5,19 +5,19 @@ from qiskit.tools.jupyter import *
 from qiskit.visualization import *
 from qiskit.circuit import Gate
 
-
-
 import numpy as np
+
+
 
 def cos_classifier(train, test, label_train, printing=False):
     # x_train = train
     # x_new = test
     # y_train = label_train
     c = ClassicalRegister(1, 'c')
-    x_train = QuantumRegister(1, 'x_b')
-    x_test = QuantumRegister(1, 'x_test')
-    y_train = QuantumRegister(1, 'y_train')
-    y_test = QuantumRegister(1, 'ancilla')
+    x_train = QuantumRegister(1, 'x^{(b)}')
+    x_test = QuantumRegister(1, 'x^{(test)}')
+    y_train = QuantumRegister(1, 'y^{(b)}')
+    y_test = QuantumRegister(1, 'y^{(test)}')
     qc = QuantumCircuit(x_train, x_test, y_train, y_test, c)
     qc.initialize(train, [x_train[0]])
     qc.initialize(test, [x_test[0]])

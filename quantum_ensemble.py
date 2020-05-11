@@ -57,6 +57,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     # print(retrieve_proba(r), y_ts)
 
 a, b = evaluation_metrics(predictions, X_test, y_test)
+print(a,b)
 
 file = open("output/results_ensemble.csv", 'a')
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
