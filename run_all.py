@@ -17,3 +17,7 @@ for seed in seeds:
                 n_train = 8
             print(seed, d, n_train, std)
             execfile('quantum_ensemble.py')
+
+
+seeds = [274, 2, 962, 238, 589]
+stds = [ .2, .3, .4]

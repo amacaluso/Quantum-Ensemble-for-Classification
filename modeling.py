@@ -1,6 +1,11 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 from qiskit import BasicAer, execute, IBMQ
 from qiskit.compiler import transpile
+from qiskit.tools.jupyter import *
+from qiskit.visualization import *
+from qiskit.circuit import Gate
+
+
 
 import numpy as np
 
