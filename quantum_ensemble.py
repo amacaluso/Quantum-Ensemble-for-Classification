@@ -1,14 +1,16 @@
 import sys
 
+sys.path.insert(1, '../')
+
 from Utils import *
 from modeling import *
 
-sys.path.insert(1, '../')
 
 IBMQ.load_account()
 provider = IBMQ.get_provider(hub='ibm-q')
 provider.backends()
-backend = provider.get_backend('ibmq_qasm_simulator')
+# backend = provider.get_backend('ibmq_qasm_simulator')
+backend = provider.get_backend('ibmq_16_melbourne')
 
 # create_dir('data')
 # create_dir('output')
@@ -59,6 +61,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
 a, b = evaluation_metrics(predictions, X_test, y_test)
 print(a,b)
 
-file = open("output/results_ensemble.csv", 'a')
+#file = open("output/results_ensemble.csv", 'a')
+file = open("output/results_ensemble_real.csv", 'a')
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
 file.close()
