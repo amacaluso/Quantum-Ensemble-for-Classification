@@ -12,26 +12,23 @@ provider.backends()
 # backend = provider.get_backend('ibmq_qasm_simulator')
 backend = provider.get_backend('ibmq_16_melbourne')
 
+d=1
+n_train=2
+seed=962
+std=.3
+np.random.seed(seed)
+
 # create_dir('data')
 # create_dir('output')
-# create_dir('IMG')
 
-n_shots = 500
+n_shots = 1000
 n_swap = 1
-
-# n_train = 2
-# d = 1
-# std = .3
-
 balanced = True
-
-# seed = 565
-np.random.seed(seed)
 
 n = 200
 test_size = .1
 
-X, y = load_data(n=n, std=std, save=False)
+X, y = load_data(n=n, std=std)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed, test_size=test_size)
 
 Y_vector_train = label_to_array(y_train)
@@ -48,7 +45,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     x_test = normalize_custom(x_test)
 
     qc = ensemble(X_data, Y_data, x_test, n_swap=n_swap, d=d, balanced=balanced)
-    qc = transpile(qc, basis_gates = ['u1', 'u2', 'u3', 'cx'], optimization_level=3)
+    qc = transpile(qc, basis_gates = ['u1', 'u2', 'u3', 'cx'], optimization_level=2)
     # r = exec_simulator(qc, n_shots=n_shots)
 
     job = execute(qc, backend, shots=n_shots)
