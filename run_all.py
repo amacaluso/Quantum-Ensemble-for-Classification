@@ -5,7 +5,7 @@ from past.builtins import execfile
 # print(seeds)
 
 # seeds = [274, 2, 962, 238, 589]
-seed=[962]
+seeds = [469, 497, 725, 894, 988]
 stds = [ .2, .3, .4, .5]
 d_vector = [ 1, 2, 3, 4]
 

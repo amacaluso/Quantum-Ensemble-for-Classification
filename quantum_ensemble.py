@@ -21,7 +21,7 @@ np.random.seed(seed)
 # create_dir('data')
 # create_dir('output')
 
-n_shots = 1000
+n_shots = 500
 n_swap = 1
 balanced = True
 
