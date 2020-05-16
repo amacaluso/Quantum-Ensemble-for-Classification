@@ -12,16 +12,16 @@ provider.backends()
 # backend = provider.get_backend('ibmq_qasm_simulator')
 backend = provider.get_backend('ibmq_16_melbourne')
 
-d=1
-n_train=2
-seed=962
-std=.3
+# d=3
+# n_train=4
+# seed=962
+# std=.3
 np.random.seed(seed)
 
 # create_dir('data')
 # create_dir('output')
 
-n_shots = 500
+n_shots = 1000
 n_swap = 1
 balanced = True
 
@@ -45,8 +45,9 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
     x_test = normalize_custom(x_test)
 
     qc = ensemble(X_data, Y_data, x_test, n_swap=n_swap, d=d, balanced=balanced)
-    qc = transpile(qc, basis_gates = ['u1', 'u2', 'u3', 'cx'], optimization_level=2)
+    qc = transpile(qc, basis_gates = ['u1', 'u2', 'u3', 'cx'], optimization_level=1)
     # r = exec_simulator(qc, n_shots=n_shots)
+    # qc = ensemble_fixed_U(X_data, Y_data, x_test)
 
     job = execute(qc, backend, shots=n_shots)
     results = job.result()
