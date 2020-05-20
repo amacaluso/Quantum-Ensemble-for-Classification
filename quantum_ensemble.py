@@ -9,8 +9,8 @@ from modeling import *
 IBMQ.load_account()
 provider = IBMQ.get_provider(hub='ibm-q')
 provider.backends()
-# backend = provider.get_backend('ibmq_qasm_simulator')
-backend = provider.get_backend('ibmq_16_melbourne')
+backend = provider.get_backend('ibmq_qasm_simulator')
+# backend = provider.get_backend('ibmq_16_melbourne')
 
 # d=3
 # n_train=4
@@ -21,7 +21,7 @@ np.random.seed(seed)
 # create_dir('data')
 # create_dir('output')
 
-n_shots = 1000
+n_shots = 500
 n_swap = 1
 balanced = True
 
@@ -59,7 +59,7 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
 a, b = evaluation_metrics(predictions, X_test, y_test)
 print(a,b)
 
-#file = open("output/results_ensemble.csv", 'a')
-file = open("output/results_ensemble_real.csv", 'a')
+file = open("output/results_ensemble.csv", 'a')
+#file = open("output/results_ensemble_real.csv", 'a')
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
 file.close()
