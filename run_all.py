@@ -1,14 +1,14 @@
 from past.builtins import execfile
 
 # import random
-# seeds = random.sample(range(1, 10**3), 5)
+# seeds = random.sample(range(10000, 10**5), 5)
 # print(seeds)
 # 962, 274, 2, 238, 589, 469, 497, 725, 894, 988, 733, 219, 164, 315, 161
 
 
-seeds = [ 161]
-stds = [.4, .5]
-d_vector = [2]
+seeds = [962, 274, 2, 238, 589, 469, 497, 725, 894, 988, 733, 219, 164, 315, 161]
+stds = [.6 ] # .2, .3
+d_vector = [1,2, 3, 4]
 
 for seed in seeds:
     for d in d_vector:
