@@ -298,7 +298,7 @@ def ensemble_random_swap(X_data, Y_data, x_test, d = 2 ):
     return qc
 
 
-def exec_simulator(qc, n_shots = 1000):
+def exec_simulator(qc, n_shots = 8192):
     # QASM simulation
     backend = BasicAer.get_backend('qasm_simulator')
     job = execute(qc, backend, shots = n_shots)
