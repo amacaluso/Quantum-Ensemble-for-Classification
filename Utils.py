@@ -286,7 +286,8 @@ def evaluation_metrics(predictions, X_test, y_test, save=True):
 #     return X_data, Y_data
 
 
-def training_set(X, Y, n=4):
+def training_set(X, Y, n=4, seed=123):
+    np.random.seed(seed)
     ix_y1 = np.random.choice(np.where(Y == 1)[0], int(n / 2), replace=False)
     ix_y0 = np.random.choice(np.where(Y == 0)[0], int(n / 2), replace=False)
 

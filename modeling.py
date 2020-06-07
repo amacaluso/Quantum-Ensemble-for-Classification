@@ -5,8 +5,7 @@ from qiskit.tools.jupyter import *
 from qiskit.visualization import *
 from qiskit.circuit import Gate
 
-import numpy as np
-
+from Utils import *
 
 
 def cos_classifier(train, test, label_train, printing=False):
