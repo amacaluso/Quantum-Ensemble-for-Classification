@@ -26,7 +26,7 @@ n = 200
 test_size = .1
 
 X, y = load_data(n=n, std=std)
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed, test_size=test_size)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=123, test_size=test_size)
 
 Y_vector_train = label_to_array(y_train)
 Y_vector_test = label_to_array(y_test)
@@ -51,11 +51,15 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
 a, b = evaluation_metrics(predictions, X_test, y_test)
 print(a, b)
 
+# file = open("output/results_ensemble.csv", 'a')
 file = open("output/results_ensemble.csv", 'a')
+
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
 file.close()
 
 
-file = open("notebooks/output/results_ensemble.csv", 'a')
+# file = open("notebooks/output/results_ensemble.csv", 'a')
+file = open("output/results_ensemble.csv", 'a')
+
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
 file.close()
