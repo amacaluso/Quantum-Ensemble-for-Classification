@@ -93,10 +93,12 @@ def plot_cls(predictions,
     ax.legend((pl1[0], pl2[0]), (r'$P(\tilde{y}=0)$', r'$P(\tilde{y}=1)$'), prop=dict(size=14))
     ax.autoscale_view()
     plt.ylim(0, 1)
+    plt.xlabel('Classifier')
+    plt.xlabel(r'$P(\tilde{y})')
     plt.grid(alpha=.2)
     ax.tick_params(pad=5)
     if file is not None:
-        plt.savefig('output/' + file + '.png', dpi=300)
+        plt.savefig('output/' + file + '.png', dpi=200)
     plt.show()
 
 
