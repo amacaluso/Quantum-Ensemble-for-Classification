@@ -1,1 +1,1 @@
-# Quantum_Ensemble
+# Quantum-Ensemble-for-Classification
