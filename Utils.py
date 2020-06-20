@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 import random
 
 from scipy.stats import ttest_ind
+from IPython.display import Image
+
 
 import warnings
 warnings.filterwarnings('ignore')
