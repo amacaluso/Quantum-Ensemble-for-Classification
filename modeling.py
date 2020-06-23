@@ -13,9 +13,9 @@ def cos_classifier(train, test, label_train, printing=False):
     # x_new = test
     # y_train = label_train
     c = ClassicalRegister(1, 'c')
-    x_train = QuantumRegister(1, 'x^{(b)}')
+    x_train = QuantumRegister(1, 'x^{(i)}')
     x_test = QuantumRegister(1, 'x^{(test)}')
-    y_train = QuantumRegister(1, 'y^{(b)}')
+    y_train = QuantumRegister(1, 'y^{(i)}')
     y_test = QuantumRegister(1, 'y^{(test)}')
     qc = QuantumCircuit(x_train, x_test, y_train, y_test, c)
     qc.initialize(train, [x_train[0]])
@@ -31,7 +31,6 @@ def cos_classifier(train, test, label_train, printing=False):
     if printing:
         print(qc)
     return qc
-
 
 
 
@@ -134,8 +133,8 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     control = QuantumRegister(d, 'd')
     data = QuantumRegister(n_obs, 'x')
     labels = QuantumRegister(n_obs, 'y')
-    data_test = QuantumRegister(1, 'x^{test}')
-    label_test = QuantumRegister(1, 'y^{test}')
+    data_test = QuantumRegister(1, 'x^{(test)}')
+    label_test = QuantumRegister(1, 'y^{(test)}')
     c = ClassicalRegister(1, 'c')
 
     qc = QuantumCircuit(control, data, labels, data_test, label_test, c)
@@ -188,6 +187,7 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     # qc.cswap(labels[ix_cls], data[ix_cls], test[0])
     # qc.h(labels[ix_cls])
     # qc.measure(labels[ix_cls], c)
+    qc.barrier()
     qc.h(label_test[0])
     qc.cswap(label_test[0], data[ix_cls], data_test[0])
     qc.h(label_test[0])

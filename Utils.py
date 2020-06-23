@@ -96,7 +96,7 @@ def plot_cls(predictions,
     ax.autoscale_view()
     plt.ylim(0, 1)
     plt.xlabel('Classifier')
-    plt.xlabel(r'$P(\tilde{y})')
+    #plt.xlabel(r'$P(\tilde{y})$')
     plt.grid(alpha=.2)
     ax.tick_params(pad=5)
     if file is not None:
@@ -307,3 +307,10 @@ def training_set(X, Y, n=4, seed=123):
     Y_data = np.concatenate([Y_vector[ix_y1], Y_vector[ix_y0]])
 
     return X_data_new, Y_data
+
+
+
+# Define the cosine classifier
+def cosine_classifier(x,y):
+    return 1/2 + (cosine_similarity([x], [y])**2)/2
+
