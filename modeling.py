@@ -33,6 +33,50 @@ def cos_classifier(train, test, label_train, printing=False):
     return qc
 
 
+def state_prep(x):
+    backend = Aer.get_backend('unitary_simulator')
+
+    x = normalize_custom(x)
+
+    qreg = QuantumRegister(1)
+    qc = QuantumCircuit(qreg)
+    # Run the quantum circuit on a unitary simulator backend
+    qc.initialize(x,[qreg])
+    job = execute(qc, backend)
+    result = job.result()
+    
+    U = result.get_unitary(qc)
+    S = Operator(U)
+    return S
+
+
+
+def quantum_swap_test(a,b):
+    a = normalize_custom(a)
+    b = normalize_custom(b)
+    
+    ancilla = QuantumRegister(1)
+    v1 = QuantumRegister(1, 'x^{(1)}')
+    v2 = QuantumRegister(1, 'x^{(2)}')
+    
+    c = ClassicalRegister(1, 'c')
+    
+    qc = QuantumCircuit(v1, v2, ancilla, c)
+    
+    S1 = state_prep(a)
+    qc.unitary(S1, [0], label='$S_{x^{(1)}}$')
+
+    S2 = state_prep(b)
+    qc.unitary(S2, [1], label='$S_{x^{(2)}}$')
+
+    qc.barrier()
+    
+    qc.h(ancilla[0])
+    qc.cswap(ancilla[0], v1[0], v2[0])
+    qc.h(ancilla[0])
+    qc.measure(ancilla[0], c)
+    return qc
+
 
 
 
