@@ -9,6 +9,7 @@ from sklearn import datasets
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.model_selection import train_test_split
 import random
+from numpy.random import uniform
 
 from scipy.stats import ttest_ind
 from IPython.display import Image

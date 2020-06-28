@@ -53,32 +53,36 @@ def state_prep(x):
 
 
 
-def quantum_swap_test(a,b):
-    a = normalize_custom(a)
-    b = normalize_custom(b)
-    
-    ancilla = QuantumRegister(1)
-    v1 = QuantumRegister(1, 'x^{(1)}')
-    v2 = QuantumRegister(1, 'x^{(2)}')
-    
+def quantum_cosine_classifier(train, test, label_train):
+    # x_train = train
+    # x_new = test
+    # y_train = label_train
     c = ClassicalRegister(1, 'c')
+    x_train = QuantumRegister(1, 'x^{(i)}')
+    x_test = QuantumRegister(1, 'x^{(test)}')
+    y_train = QuantumRegister(1, 'y^{(i)}')
+    y_test = QuantumRegister(1, 'y^{(test)}')
+    qc = QuantumCircuit(x_train, x_test, y_train, y_test, c)
     
-    qc = QuantumCircuit(v1, v2, ancilla, c)
+    S1 = state_prep(train)
+    qc.unitary(S1, [0], label='$S_{x}$')
+
+    S2 = state_prep(test)
+    qc.unitary(S2, [1], label='$S_{x}$')
     
-    S1 = state_prep(a)
-    qc.unitary(S1, [0], label='$S_{x^{(1)}}$')
+    S2 = state_prep(label_train)
+    qc.unitary(S2, [2], label='$S_{y}$')
 
-    S2 = state_prep(b)
-    qc.unitary(S2, [1], label='$S_{x^{(2)}}$')
-
+    #qc.initialize(label_train, [y_train[0]])
     qc.barrier()
-    
-    qc.h(ancilla[0])
-    qc.cswap(ancilla[0], v1[0], v2[0])
-    qc.h(ancilla[0])
-    qc.measure(ancilla[0], c)
-    return qc
-
+    qc.h(y_test)
+    qc.cswap(y_test, x_train, x_test)
+    qc.h(y_test)
+    qc.barrier()
+    qc.cx(y_train, y_test)
+    qc.measure(y_test, c)
+    return qc    
+ 
 
 
 
@@ -166,6 +170,79 @@ def ensemble(X_data, Y_data, x_test, n_swap=1, d=2, balanced=True):
     return qc
 
 
+# def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
+#     #d = 2  # number of control qubits
+#     n_obs = len(X_data)
+
+#     if n_obs != len(Y_data):
+#         return print('Error: in the input size')
+
+#     n_reg = d + 2 * n_obs + 1  # total number of registers
+
+#     control = QuantumRegister(d, 'd')
+#     data = QuantumRegister(n_obs, 'x')
+#     labels = QuantumRegister(n_obs, 'y')
+#     data_test = QuantumRegister(1, 'x^{(test)}')
+#     label_test = QuantumRegister(1, 'y^{(test)}')
+#     c = ClassicalRegister(1, 'c')
+
+#     qc = QuantumCircuit(control, data, labels, data_test, label_test, c)
+
+#     qc.initialize(x_test, [data_test[0]])
+
+#     for index in range(n_obs):
+#         qc.initialize(X_data[index], [data[index]])
+#         qc.initialize(Y_data[index], [labels[index]])
+
+#     for i in range(d):
+#         qc.h(control[i])
+
+#     U1 = [0, 2]  # np.random.choice(range(4), 2, replace=False)
+#     U2 = [1, 3]  # np.random.choice(range(4), 2, replace=False)
+#     # U3 = [0, 0]  # np.random.choice(range(4), 2, replace=False)
+#     U4 = [2,3]  # np.random.choice(range(4), 2, replace=False)
+
+#     qc.barrier()
+
+#     # U1
+#     qc.cswap(control[0], data[int(U1[0])], data[int(U1[1])])
+#     qc.cswap(control[0], labels[int(U1[0])], labels[int(U1[1])])
+
+#     qc.x(control[0])
+
+#     # U2
+#     qc.cswap(control[0], data[int(U2[0])], data[int(U2[1])])
+#     qc.cswap(control[0], labels[int(U2[0])], labels[int(U2[1])])
+
+#     qc.barrier()
+
+#     # U3
+#     # qc.cswap(control[1], data[int(U3[0])], data[int(U3[1])])
+#     # qc.cswap(control[1], labels[int(U3[0])], labels[int(U3[1])])
+
+#     qc.x(control[1])
+
+#     # U4
+#     qc.cswap(control[1], data[int(U4[0])], data[int(U4[1])])
+#     qc.cswap(control[1], labels[int(U4[0])], labels[int(U4[1])])
+
+#     # qc.barrier()
+#     # qc.initialize(x_test, [data_test[0]])
+#     # qc.barrier()
+
+#     # C
+#     ix_cls = 3
+#     # qc.h(labels[ix_cls])
+#     # qc.cswap(labels[ix_cls], data[ix_cls], test[0])
+#     # qc.h(labels[ix_cls])
+#     # qc.measure(labels[ix_cls], c)
+#     qc.barrier()
+#     qc.h(label_test[0])
+#     qc.cswap(label_test[0], data[ix_cls], data_test[0])
+#     qc.h(label_test[0])
+#     qc.cx(labels[ix_cls], label_test[0])
+#     qc.measure(label_test[0], c)
+#     return qc
 
 def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     #d = 2  # number of control qubits
@@ -185,11 +262,18 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
 
     qc = QuantumCircuit(control, data, labels, data_test, label_test, c)
 
-    qc.initialize(x_test, [data_test[0]])
-
+    # qc.initialize(x_test, [data_test[0]])
+    
+    
     for index in range(n_obs):
-        qc.initialize(X_data[index], [data[index]])
-        qc.initialize(Y_data[index], [labels[index]])
+        # qc.initialize(X_data[index], [data[index]])
+        # qc.initialize(Y_data[index], [labels[index]])
+        Sx = state_prep(X_data[index])
+        qc.unitary(Sx, [2+index], label='$S_{x}$')
+        
+        Sy = state_prep(Y_data[index])
+        qc.unitary(Sy, [6+index], label='$S_{y}$')
+
 
     for i in range(d):
         qc.h(control[i])
@@ -223,8 +307,11 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     qc.cswap(control[1], data[int(U4[0])], data[int(U4[1])])
     qc.cswap(control[1], labels[int(U4[0])], labels[int(U4[1])])
 
-    # qc.barrier()
+    qc.barrier()
     # qc.initialize(x_test, [data_test[0]])
+    Sx = state_prep(x_test)
+    qc.unitary(Sx, [10], label='$S_{x}$')
+
     # qc.barrier()
 
     # C
@@ -240,7 +327,6 @@ def ensemble_fixed_U(X_data, Y_data, x_test, d = 2 ):
     qc.cx(labels[ix_cls], label_test[0])
     qc.measure(label_test[0], c)
     return qc
-
 
 
 def ensemble_random_swap(X_data, Y_data, x_test, d = 2 ):
