@@ -318,26 +318,26 @@ def cosine_classifier(x,y):
 
 def avg_vs_ensemble(avg, ens, ens_real=None):
     if ens_real!=None:
-        plt.plot(np.arange(N_runs), p1_ens_real, marker='o', color='lightblue', label='Ensemble (RL)')
+        plt.plot(np.arange(N_runs), p1_ens_real, marker='o', color='lightblue', label='qEnsemble (Rd)')
     N_runs = len(avg)
-    plt.plot(np.arange(N_runs), ens, marker='o', color='orange', label = 'Ensemble (QASM)')
+    plt.plot(np.arange(N_runs), ens, marker='o', color='orange', label = 'qEnsemble (QASM)')
     plt.scatter(np.arange(N_runs), avg, label='Simple AVG', color='sienna', zorder=3, linewidth=.5)
-    plt.title('Quantum Ensemble vs Simple Average', size=12).set_position([.5, 1.05])
+    plt.title('Quantum Ensemble vs Classical Ensemble', size=12).set_position([.5, 1.05])
     plt.xlabel('runs', size=12)
-    plt.ylabel(r'$P(\tilde{y}=1)$', size =12)
+    plt.ylabel(r'$P(y^{(test)}=1$', size =12)
     plt.xticks(np.arange(0, N_runs+1, 5), size = 12)
     plt.yticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], size = 12)
     plt.ylim(0,1)
     plt.grid(alpha=.3)
     plt.legend()
 
-    
+
 def quantum_cos_random_data(x, P0, P1, err):
     fig, ax = plt.subplots(1)
     ax.plot(x, P0 , lw=2, color='blue')
-    ax.fill_between(x, P0 - err, P0 + err, facecolor = 'blue', label='$y^{(i)} = 1$', alpha=0.5)
+    ax.fill_between(x, P0 - err, P0 + err, facecolor = 'blue', label='$y_{b} = 1$', alpha=0.5)
     ax.plot(x, P1 , lw=2, color='orange')
-    ax.fill_between(x, P1 - err, P1 + err, facecolor = 'orange', label='$y^{(i)} = 0$' , alpha=0.5)
+    ax.fill_between(x, P1 - err, P1 + err, facecolor = 'orange', label='$y_{b} = 0$' , alpha=0.5)
     #ax.plot(q, mean, lw=2, label = str(np.round(err, 1)), color=color)
     #ax.fill_between(q, mean + upper, mean - lower, facecolor=color, alpha=0.5)
     #ax.set_title(r'random walkers empirical $\mu$ and $\pm \sigma$ interval')
@@ -350,5 +350,5 @@ def quantum_cos_random_data(x, P0, P1, err):
     #ax.set_yticklabels([0, .2, .4, 0.2, 0.3, 0.4, 0.5], size=12)
     ax.set_yticklabels([0, 0.0, .2, .4, .6, 0.8, 1.0], size=14)
     ax.grid(alpha=.3)
-    # plt.savefig('output/cos_classifier_behaviour.png', dpi = 300, bbox_inches='tight')
-    # plt.show()
+    plt.savefig('output/cos_classifier_behaviour.png', dpi = 300, bbox_inches='tight')
+    plt.show()

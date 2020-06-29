@@ -2,16 +2,12 @@ import sys
 
 sys.path.insert(1, '../')
 
-from Utils import *
 from modeling import *
 
 d=0
 n_train=1
 #seed=5646
 std=.3
-
-# create_dir('data')
-# create_dir('output')
 
 n_shots = 8192
 n_swap = 1

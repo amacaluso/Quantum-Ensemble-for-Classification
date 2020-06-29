@@ -56,10 +56,3 @@ file = open("output/results_ensemble.csv", 'a')
 
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
 file.close()
-
-
-# file = open("notebooks/output/results_ensemble.csv", 'a')
-file = open("output/results_ensemble.csv", 'a')
-
-file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
-file.close()

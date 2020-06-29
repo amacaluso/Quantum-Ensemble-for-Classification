@@ -58,9 +58,9 @@ def quantum_cosine_classifier(train, test, label_train):
     # x_new = test
     # y_train = label_train
     c = ClassicalRegister(1, 'c')
-    x_train = QuantumRegister(1, 'x^{(i)}')
+    x_train = QuantumRegister(1, 'x_{b}')
     x_test = QuantumRegister(1, 'x^{(test)}')
-    y_train = QuantumRegister(1, 'y^{(i)}')
+    y_train = QuantumRegister(1, 'y_{b}')
     y_test = QuantumRegister(1, 'y^{(test)}')
     qc = QuantumCircuit(x_train, x_test, y_train, y_test, c)
     
