@@ -4,24 +4,25 @@ from Utils import *
 create_dir('data')
 create_dir('output')
 
+# import random
+# seeds = random.sample(range(1, 10**4), 10)
+# print(seeds)
 
-import random
-seeds = random.sample(range(1, 10**4), 10)
-print(seeds)
+seeds = [4583, 7392, 1425, 3255, 82, 892, 3535, 5197, 5479, 6803]
 
-seeds = [5229, 2131, 6592, 9911, 2275, 2278, 6135, 7754, 301, 1242]
+# run experiment for the quantum cosine classifier with std=.3
 
 for seed in seeds:
     execfile('quantum_cosine_classifier.py')
 
 data = pd.read_csv('output/result_single_classifier.csv',
-                   names=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l'])
+                   names=['n', 'n_train', 'n_swap', 'd', 'balanced',
+                          'test_size', 'std', 'a', 'b', 'seed'])
 
-np.mean(data.h)
-np.std(data.h)
-
-np.mean(data.i)
-np.std(data.i)
+np.mean(data.a)
+np.std(data.a)
+np.mean(data.b)
+np.std(data.b)
 
 # seeds = [4583, 7392, 1425, 3255, 82, 892, 3535, 5197, 5479, 6803]
 stds = [.3,.4,.5,.6]
@@ -33,6 +34,6 @@ for seed in seeds:
             n_train = 2 ** d
             if n_train > 8:
                 n_train = 8
-            print(seed, d, n_train, std)
+            # print(seed, d, n_train, std)
             execfile('quantum_ensemble.py')
 

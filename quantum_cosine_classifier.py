@@ -1,7 +1,3 @@
-import sys
-
-sys.path.insert(1, '../')
-
 from modeling import *
 
 d=0
@@ -42,8 +38,10 @@ for x_test, y_ts in zip(X_test, Y_vector_test):
 
     predictions.append(retrieve_proba(r))
 
-a, b = evaluation_metrics(predictions, X_test, y_test)
-print(a,b)
+a, b = evaluation_metrics(predictions, X_test, y_test, save=False)
+
+print('seed:', seed, '   Accuracy:', a, '   Brier score:', b)
+
 
 file = open("output/result_single_classifier.csv", 'a')
 file.write("%d, %d, %d, %d, %s,%f, %f, %f, %f, %d\n" % (n, n_train, n_swap, d, balanced, test_size, std, a, b, seed))
