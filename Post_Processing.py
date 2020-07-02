@@ -109,8 +109,8 @@ def plot_cls(predictions,
     ax.set_xticks(ind + width / 2)
     ax.set_xticklabels([r'$\hat{f}_1$', r'$\hat{f}_2$', r'$\hat{f}_3$', r'$\hat{f}_4$', 'AVG', 'qEnsemble'], size=fontsize)
     ax.set_yticklabels([0.0, 0.2, 0.4, 0.6, 0.8, 1.0],size=fontsize)
-    ax.legend((pl1[0], pl2[0]), (r'$P(y_{(\text{test})}=0)$', r'$P(y_{(test)}=1)$'),
-              prop=dict(size=fontsize), bbox_to_anchor = (.85, -0.3), ncol=2)
+    ax.legend((pl1[0], pl2[0]), (r'$P(y^{(test)}=0)$', r'$P(y^{(test)}=1)$'),
+              prop=dict(size=fontsize), bbox_to_anchor = (.80, -0.3), ncol=2)
     ax.autoscale_view()
     plt.ylim(0, 1)
     #plt.xlabel('Classifier', fontsize=fontsize)
