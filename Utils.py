@@ -77,7 +77,7 @@ def add_label(d, label='0'):
 def plot_cls(predictions,
              #labels=['$f_1$', '$f_2$', '$f_3$', '$f_4$', 'AVG', '$Ensemble$'],
              title='Test point classification',
-             file='ens_vs_single.png'):
+             file=None):
     N = len(predictions)
     fig, ax = plt.subplots()
     plt.rc('text', usetex=True)
@@ -350,5 +350,5 @@ def quantum_cos_random_data(x, P0, P1, err):
     #ax.set_yticklabels([0, .2, .4, 0.2, 0.3, 0.4, 0.5], size=12)
     ax.set_yticklabels([0, 0.0, .2, .4, .6, 0.8, 1.0], size=14)
     ax.grid(alpha=.3)
-    plt.savefig('../output/cos_classifier_behaviour.png', dpi = 300, bbox_inches='tight')
+    #plt.savefig('../output/cos_classifier_behaviour.png', dpi = 300, bbox_inches='tight')
     plt.show()
