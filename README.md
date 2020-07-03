@@ -1,6 +1,8 @@
 # Quantum-Ensemble-for-Classification
 
-This repository contains the code to reproduce the results in the paper *Quantum Ensemble for Classification*. For quantum implementation the project uses the [IBM Qiskit](https://qiskit.org/) package.
+This repository contains the code to reproduce the results in the paper 
+[Quantum Ensemble for Classification](https://arxiv.org/abs/2007.01028). 
+all the quantum implementations use the [IBM qiskit](https://qiskit.org/) package.
 
 ## Description
 
@@ -21,8 +23,19 @@ classifiers.
 
 ## Usage
 
-The code is organised in two parts: 
-the IPython notebooks cover all the details omitted in Section 4.2 
-and implement all experiments that aim to show that quantum ensemble
- performs the average of multiple quantum trajectories in superposition. 
- The code in the python scripts contain the code to show that the ensemble outperforms the single classifier. 
+The code is organised in two parts:
+ 
+- IPython notebooks cover point *(i)* implementing all the experiments in Section 4.1 and 4.2. Also, they cover all
+the technical details about the quantum cosine classifier and the generation of 
+multiple independent trajectories in superposition,
+
+ 
+- python scripts *quantum_cosine_classifier.py* and *quantum_ensemble*, instead, cover point *(ii)* and implement the experiments of Section 4.3
+where it is shown that the quantum ensemble always outperforms the single classifier and  has lower variance
+
+The script *Utils.py* is used to import the needed packages and all of the custom 
+routines to generate and plot data.
+
+The script *modeling.py* contains the custom routines to define and execute the quantum algorithms.
+
+The script *Post_processing.py* plots the results of quantum implementation.
