@@ -25,12 +25,12 @@ classifiers.
 
 The code is organised in two parts:
  
-- IPython notebooks cover point *(i)* implementing all the experiments in Section 4.1 and 4.2. Also, they cover all
+- The IPython notebooks cover point *(i)* implementing all the experiments in Section 4.1 and 4.2. Also, they cover all
 the technical details about the quantum cosine classifier and the generation of 
 multiple independent trajectories in superposition,
 
  
-- python scripts *quantum_cosine_classifier.py* and *quantum_ensemble*, instead, cover point *(ii)* and implement the experiments of Section 4.3
+- The python scripts *quantum_cosine_classifier.py* and *quantum_ensemble*, instead, cover point *(ii)* and implement the experiments of Section 4.3
 where it is shown that the quantum ensemble always outperforms the single classifier and  has lower variance
 
 The script *Utils.py* is used to import the needed packages and all of the custom 
