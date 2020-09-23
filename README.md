@@ -39,3 +39,7 @@ routines to generate and plot data.
 The script *modeling.py* contains the custom routines to define and execute the quantum algorithms.
 
 The script *Post_processing.py* plots the results of quantum implementation.
+
+## Issues
+
+For any issues or questions related to the code, open a new git issue or send a mail to antonio.macaluso2@unibo.it
