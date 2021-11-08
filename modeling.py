@@ -6,6 +6,7 @@ from qiskit.visualization import *
 from qiskit.circuit import Gate
 from qiskit.quantum_info.operators import Operator
 
+from qiskit.test.mock import FakeProvider
 
 from Utils import *
 
@@ -43,7 +44,7 @@ def state_prep(x):
     qreg = QuantumRegister(1)
     qc = QuantumCircuit(qreg)
     # Run the quantum circuit on a unitary simulator backend
-    qc.initialize(x,[qreg])
+    qc.initialize(x,qreg)
     job = execute(qc, backend)
     result = job.result()
     

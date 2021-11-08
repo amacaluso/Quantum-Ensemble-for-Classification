@@ -2,7 +2,7 @@ from modeling import *
 
 d=0
 n_train=1
-#seed=5646
+# seed=5646
 std=.3
 
 n_shots = 8192
