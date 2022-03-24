@@ -20,7 +20,6 @@ np.random.seed(seed)
 
 n_shots = 8192
 n_swap = 1
-balanced = False
 
 n = 200
 test_size = .1

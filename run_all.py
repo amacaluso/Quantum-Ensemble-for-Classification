@@ -35,5 +35,8 @@ for seed in seeds:
             if n_train > 8:
                 n_train = 8
             # print(seed, d, n_train, std)
+            balanced = False
+            execfile('quantum_ensemble.py')
+            balanced = True
             execfile('quantum_ensemble.py')
 
