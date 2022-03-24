@@ -324,7 +324,7 @@ def quantum_cos_random_data(x, P0, P1, err, save = True, folder='output', comput
     ax.fill_between(x, P0 - err, P0 + err, facecolor = 'blue', label='$y_{b} = 1$', alpha=0.5)
     ax.plot(x, P1 , lw=2, color='orange')
     ax.fill_between(x, P1 - err, P1 + err, facecolor = 'orange', label='$y_{b} = 0$' , alpha=0.5)
-    ax.legend(loc='center', prop=dict(size=12))
+    ax.legend(loc='lower center', prop=dict(size=12))
     ax.set_xlabel('Cosine distance', size = 14)
     ax.set_ylabel('$Pr(y^{(test)} = 1)$',size = 14)
     ax.axhline(y=.5, xmin=-1, xmax=1, color = 'gray', linestyle = '--')

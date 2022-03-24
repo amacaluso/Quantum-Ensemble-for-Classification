@@ -54,7 +54,7 @@ def exec_circuit(qc, backend_name = 'ibmq_qasm_simulator', n_shots = 8192):
     return answer
 
 
-n=200
+n=500
 n_shots=8192
 
 computer = 'ibm_lagos'
@@ -65,7 +65,7 @@ P0 = []
 P1 = []
 
 for i in np.arange(n):
-    print(i)
+    print('cosine classifier: ', i)
     '''Random generated dataset'''
     x_train = [random.uniform(-1, 1), random.uniform(0, 1)]
     x_train_norm = normalize_custom(x_train)
@@ -81,7 +81,7 @@ for i in np.arange(n):
 
 
     #r = exec_circuit(qc, backend_name = 'ibm_lagos', n_shots=n_shots)
-    r = exec_circuit(qc, backend_name = computer, n_shots=n_shots)
+    r = exec_circuit(qc, backend_name=computer, n_shots=n_shots)
 
     P_q = r['0']/n_shots
     P0.append(P_q)
@@ -103,14 +103,13 @@ err = [abs(x1 - x2) for (x1, x2) in zip(abs(x), x_err)]
 err = np.array(err)
 P1 = 1-P0
 
-
+df = pd.DataFrame([x, P0, P1, err]).transpose()
+df.to_csv('output/' + computer + '_cosine_result_behaviour.csv', index=False)
 
 quantum_cos_random_data(x, P0, P1, err, save = True, folder='output', computer=computer)
 qc.draw(output='mpl', scale=.7)
 plt.show()
 
-df = pd.DataFrame([x, P0, P1, err]).transpose()
-df.to_csv('output/' + computer + '_cosine_result.csv', index=False)
 
 #exec(open('Quantum Ensemble as Simple Averaging.py').read())
 

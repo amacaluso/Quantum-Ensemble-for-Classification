@@ -5,8 +5,38 @@ from modeling import *
 from import_data import *
 from qiskit.test.mock import FakeProvider
 
-def run_ensemble(X_train, X_test, Y_train, Y_test, d, n_train, seed,
-                 backend, n_shots = 8192, balanced = True):
+def run_cosine_classifier(X_train, X_test, Y_train, Y_test, seed, backend, n_shots = 8192):
+    predictions = []
+    n = len(X_train)
+    test_size = len(X_test)/(len(X_test)+len(X_train))
+
+    Y_vector_train = label_to_array(Y_train)
+    Y_vector_test = label_to_array(Y_test)
+
+    np.random.seed(seed)
+    for x_test, y_ts in zip(X_test, Y_vector_test):
+        ix = np.random.choice(int(n * (1 - test_size)), 1)[0]
+        x_train = X_train[ix]
+        x_train = normalize_custom(x_train)
+        y_train = Y_vector_train[ix]
+
+        x_test = normalize_custom(x_test)
+
+        qc = cos_classifier(x_train, x_test, y_train)
+        job = execute(qc, backend, shots=n_shots)
+        results = job.result()
+        r = results.get_counts(qc)
+
+        predictions.append(retrieve_proba(r))
+
+    accuracy, brier = evaluation_metrics(predictions, X_test, Y_test, save=False)
+    print('seed: {} | n_train: {} | d: {} | Acc: {} | Brier: {} | balanced: {}'.format(seed, 1, 0, accuracy, brier, False))
+    return accuracy, brier
+
+
+
+
+def run_ensemble(X_train, X_test, Y_train, Y_test, d, n_train, seed, backend, n_shots = 8192, balanced = True):
 
     predictions = []
     for x_test, y_ts in zip(X_test, Y_test):
@@ -38,18 +68,14 @@ def run_gaussian(backend, test_size=.2, seeds=[123], d_vector = range(1,5), quan
 
     results = []
 
-    print('Data features shape:', X.shape)
-    print('Data labels shape:', Y.shape)
-
-
     for seed in seeds:
         X_train, X_test, y_train, y_test = train_test_split(X, Y, random_state=seed, test_size=test_size)
 
+        accuracy, brier = run_cosine_classifier(X_train, X_test, y_train, y_test, seed, backend, n_shots=8192)
+        row_bal = [dataset, 0, 1, test_size, seed, accuracy, brier, False, quantum_label]
+        results.append(row_bal)
 
         for d in d_vector:
-
-            row_bal = []
-
             n_train = 2**d
             if n_train > 8:
                 n_train = 8
@@ -80,17 +106,15 @@ def run_iris_1_vs_2(backend, test_size=.2, seeds=[123], d_vector = range(1,5), q
 
     results = []
 
-    print('Data features shape:', X.shape)
-    print('Data labels shape:', Y.shape)
-
 
     for seed in seeds:
         X_train, X_test, y_train, y_test = train_test_split(X, Y, random_state=seed, test_size=test_size)
 
+        accuracy, brier = run_cosine_classifier(X_train, X_test, y_train, y_test, seed, backend, n_shots=8192)
+        row_bal = [dataset, 0, 1, test_size, seed, accuracy, brier, False, quantum_label]
+        results.append(row_bal)
+
         for d in d_vector:
-
-            row_bal = []
-
             n_train = 2**d
             if n_train > 8:
                 n_train = 8
@@ -119,18 +143,14 @@ def run_iris_0_vs_2(backend, test_size=.2, seeds=[123], d_vector = range(1,5), q
 
     results = []
 
-    print('Data features shape:', X.shape)
-    print('Data labels shape:', Y.shape)
-
-
     for seed in seeds:
         X_train, X_test, y_train, y_test = train_test_split(X, Y, random_state=seed, test_size=test_size)
 
+        accuracy, brier = run_cosine_classifier(X_train, X_test, y_train, y_test, seed, backend, n_shots=8192)
+        row_bal = [dataset, 0, 1, test_size, seed, accuracy, brier, False, quantum_label]
+        results.append(row_bal)
 
         for d in d_vector:
-
-            row_bal = []
-
             n_train = 2**d
             if n_train > 8:
                 n_train = 8
@@ -159,16 +179,14 @@ def run_iris_0_vs_1(backend, test_size=.2, seeds=[123], d_vector = range(1,5), q
     results = []
     dataset = 'iris_class0_vs_class1'
 
-    print('Data features shape:', X.shape)
-    print('Data labels shape:', Y.shape)
-
-
     for seed in seeds:
         X_train, X_test, y_train, y_test = train_test_split(X, Y, random_state=seed, test_size=test_size)
 
-        for d in d_vector:
+        accuracy, brier = run_cosine_classifier(X_train, X_test, y_train, y_test, seed, backend, n_shots=8192)
+        row_bal = [dataset, 0, 1, test_size, seed, accuracy, brier, False, quantum_label]
+        results.append(row_bal)
 
-            row_bal = []
+        for d in d_vector:
 
             n_train = 2**d
             if n_train > 8:
@@ -197,10 +215,11 @@ def run_MNIST(backend, test_size=.2, seeds=[123], d_vector = range(1,5), quantum
     for seed in seeds:
         X_train, X_test, y_train, y_test = load_MNIST(n=200, train_size=1-test_size, seed=seed)
 
+        accuracy, brier = run_cosine_classifier(X_train, X_test, y_train, y_test, seed, backend, n_shots=8192)
+        row_bal = [dataset, 0, 1, test_size, seed, accuracy, brier, False, quantum_label]
+        results.append(row_bal)
+
         for d in d_vector:
-
-            row_bal = []
-
             n_train = 2**d
             if n_train > 8:
                 n_train = 8
@@ -249,9 +268,9 @@ def run_all(simulator=True, real=False, fake = False, folder='output'): #'ibm_la
     # Parameter
     results = []
     test_size=.1
-    seeds= list(range(1,2))
+    seeds=list(range(0,10))
 
-    d_vector = [1, 2]#, 2, 3, 4] #list(range(1,4))
+    d_vector = [1, 2, 3]#, 4] #list(range(1,4))
 
     results.append(run_MNIST(backend, test_size, seeds, d_vector, computer))
     #results.append(run_gaussian(backend, test_size, seeds, d_vector, computer))
@@ -278,6 +297,4 @@ def run_all(simulator=True, real=False, fake = False, folder='output'): #'ibm_la
     return data
 
 df = run_all(simulator=True, real=False, fake= False)
-df = run_all(simulator=False, real=False, fake=True)
-
-
+#df = run_all(simulator=False, real=False, fake=True)
