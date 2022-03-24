@@ -4,11 +4,11 @@ sys.path.insert(1, '../')
 
 from modeling import *
 
-IBMQ.load_account()
-provider = IBMQ.get_provider(hub='ibm-q')
-provider.backends()
-backend = provider.get_backend('ibmq_qasm_simulator')
-
+# IBMQ.load_account()
+# provider = IBMQ.get_provider(hub='ibm-q')
+# provider.backends()
+# backend = provider.get_backend('ibmq_qasm_simulator')
+backend = BasicAer.get_backend('qasm_simulator')
 # d=3
 # n_train=4
 # seed=962
@@ -20,7 +20,7 @@ np.random.seed(seed)
 
 n_shots = 8192
 n_swap = 1
-balanced = True
+balanced = False
 
 n = 200
 test_size = .1
