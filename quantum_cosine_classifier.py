@@ -12,7 +12,7 @@ balanced = True
 n = 200
 test_size = .1
 
-X, y = load_data(n=n, std=std)
+X, y = load_data(n=n, std=std, plot=False)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=123, test_size=test_size)
 
 Y_vector_train = label_to_array(y_train)
