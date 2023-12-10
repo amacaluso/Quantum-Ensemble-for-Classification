@@ -10,6 +10,10 @@ def run_cosine_classifier(X_train, X_test, Y_train, Y_test, seed, backend, n_sho
     n = len(X_train)
     test_size = len(X_test)/(len(X_test)+len(X_train))
 
+
+    # Y_vector_train = label_to_array(y_train)
+    # Y_vector_test = label_to_array(y_test)
+
     Y_vector_train = label_to_array(Y_train)
     Y_vector_test = label_to_array(Y_test)
 
@@ -241,19 +245,20 @@ def run_MNIST(backend, test_size=.2, seeds=[123], d_vector = range(1,5), quantum
 
 
 
-def run_all(simulator=True, real=False, fake = False, folder='output'): #'ibm_lagos' 'ibm_guadalupe'
+def run_all(simulator=True, real=False, fake = False, folder='new_output'): #'ibm_lagos' 'ibm_guadalupe'
 
     # load IBMQ account and backend
     IBMQ.load_account()
-    provider = IBMQ.get_provider(hub='ibm-q-research')
+    provider = IBMQ.get_provider('ibm-q')
 
     if real == True:
         computer = 'ibm_lagos'
         backend = provider.get_backend(computer)
 
     if simulator==True:
-        computer = 'ibmq_qasm_simulator'
-        backend = provider.get_backend(computer)
+        computer = 'qasm_simulator'
+        # backend = provider.get_backend(computer)
+        backend = BasicAer.get_backend(computer)
 
     if fake == True:
         provider = FakeProvider()
@@ -267,15 +272,21 @@ def run_all(simulator=True, real=False, fake = False, folder='output'): #'ibm_la
     create_dir(os.path.join(folder,computer))
     # Parameter
     results = []
-    test_size=.1
+    test_size=.2
     seeds=list(range(0,10))
 
-    d_vector = [1, 2, 3]#, 4] #list(range(1,4))
+    d_vector = [1, 2, 3, 4] #list(range(1,4))
 
+    print("Running MNIST")
     results.append(run_MNIST(backend, test_size, seeds, d_vector, computer))
     #results.append(run_gaussian(backend, test_size, seeds, d_vector, computer))
+    print("Running iris_0_vs_1")
     results.append(run_iris_0_vs_1(backend, test_size, seeds, d_vector, computer))
+
+    print("Running iris_0_vs_2")
     results.append(run_iris_0_vs_2(backend, test_size, seeds, d_vector, computer))
+
+    print("Running iris_1_vs_2")
     results.append(run_iris_1_vs_2(backend, test_size, seeds, d_vector, computer))
     #results.append(run_breast(backend, test_size, seeds, d_vector, computer))
 
