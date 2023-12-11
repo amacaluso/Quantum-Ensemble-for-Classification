@@ -245,7 +245,7 @@ def run_MNIST(backend, test_size=.2, seeds=[123], d_vector = range(1,5), quantum
 
 
 
-def run_all(simulator=True, real=False, fake = False, folder='new_output'): #'ibm_lagos' 'ibm_guadalupe'
+def run_all(simulator=True, real=False, fake = False, folder='output'): #'ibm_lagos' 'ibm_guadalupe'
 
     # load IBMQ account and backend
     IBMQ.load_account()
@@ -273,9 +273,9 @@ def run_all(simulator=True, real=False, fake = False, folder='new_output'): #'ib
     # Parameter
     results = []
     test_size=.2
-    seeds=list(range(0,10))
+    seeds=[6,12,18]#list(range(6,9))
 
-    d_vector = [1, 2, 3, 4] #list(range(1,4))
+    d_vector = [1, 2, 3] #list(range(1,4))
 
     print("Running MNIST")
     results.append(run_MNIST(backend, test_size, seeds, d_vector, computer))
