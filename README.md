@@ -6,7 +6,7 @@ This repository contains the code to reproduce the results in the paper
 
 ## Description
 
-We propose a new quantum algorithm to perform ensemble classification. 
+We propose a quantum algorithm to perform ensemble classification using bagging strategy. 
 The underpinning idea is to generate several quantum trajectories in superposition 
 to obtain *B* different transformations of the training set in only *log(B)* operations. 
 This implies an exponential speedup in the size of the ensemble with respect to 
