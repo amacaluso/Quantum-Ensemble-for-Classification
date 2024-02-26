@@ -1,7 +1,7 @@
-# Quantum-Ensemble-for-Classification
+# An eﬀicient quantum algorithm for ensemble classification using bagging
 
 This repository contains the code to reproduce the results in the paper 
-[An eﬀicient quantum algorithm for ensemble classification using bagging]([https://arxiv.org/abs/2007.01028](https://doi.org/10.1049/qtc2.12087)). 
+[An eﬀicient quantum algorithm for ensemble classification using bagging](https://doi.org/10.1049/qtc2.12087). 
 all the quantum implementations use the [IBM qiskit](https://qiskit.org/) package.
 
 ## Description
